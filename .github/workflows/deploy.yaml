@@ -17,12 +17,12 @@ jobs:
         with:
           hugo-version: 'latest'
 
-      - name: Build the site
+      - name: Build the Hugo site
         run: hugo
 
       - name: Deploy to GitHub Pages
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_DEPLOY }}  # Use your Personal Access Token (PAT)
+          GITHUB_TOKEN: ${{ secrets.PAT_DEPLOY }}  # Use the Personal Access Token
         run: |
           cd public
           git init
