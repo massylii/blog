@@ -1,33 +1,28 @@
-name: Deploy Hugo Site to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # The branch that triggers the workflow
+      - main  # Set a branch name to trigger deployment
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the source code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: 'latest'
+      # Add your build steps here if needed
 
-      - name: Build the site
-        run: hugo
-
-      - name: Deploy to GitHub Pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_DEPLOY }}  # Use the personal access token (PAT)
+      - name: Deploy
         run: |
           cd public
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "github-actions-bot@users.noreply.github.com"
           git init
           git remote add origin https://github.com/massylii/massylii.github.io.git
           git checkout -b main
           git add .
           git commit -m "Deploy site"
           git push --force origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
