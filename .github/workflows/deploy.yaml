@@ -11,6 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Verify Repository
+        run: |
+          if ! gh repo view massylii/massylii.github.io &> /dev/null; then
+            echo "Repository does not exist. Creating it..."
+            gh repo create massylii/massylii.github.io --public
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Add your build steps here if needed
 
       - name: Deploy
@@ -22,6 +31,6 @@ jobs:
           git checkout -b main
           git add .
           git commit -m "Deploy site"
-          git push --force "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/massylii/massylii.github.io.git" main
+          git push --force "https://${{ secrets.GH_PAT }}@github.com/massylii/massylii.github.io.git" main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
