@@ -22,7 +22,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_DEPLOY }}  # Use the Personal Access Token
+          GITHUB_TOKEN: ${{ secrets.PAT_DEPLOY }}  # Use your Personal Access Token (PAT)
         run: |
           cd public
           git init
@@ -32,4 +32,4 @@ jobs:
           git checkout -b main
           git add .
           git commit -m "Deploy site"
-          git push --force origin main
+          git push --force https://massylii:${{ secrets.PAT_DEPLOY }}@github.com/massylii/massylii.github.io.git main
