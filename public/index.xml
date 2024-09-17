@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MASSYLII</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on MASSYLII</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 24 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Pentesting SMB Protocol</title>
+      <link>http://localhost:1313/blog/post1/</link>
+      <pubDate>Fri, 24 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/blog/post1/</guid>
+      <description>SMB is a networking protocol used to share files between different servers</description>
+    </item>
+    <item>
+      <title>Blog Post With Extra Extra Long Title That Keeps On Going</title>
+      <link>http://localhost:1313/blog/post2/</link>
+      <pubDate>Thu, 23 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/blog/post2/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</description>
+    </item>
+    <item>
+      <title>Blog Post 3</title>
+      <link>http://localhost:1313/blog/post3/</link>
+      <pubDate>Wed, 22 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/blog/post3/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</description>
+    </item>
+    <item>
+      <title>Blog Post 4</title>
+      <link>http://localhost:1313/blog/post4/</link>
+      <pubDate>Tue, 21 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/blog/post4/</guid>
+      <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id erat enim. Ut cursus magna sed luctus auctor. Sed eu augue dignissim, lobortis ipsum eu, dictum nisi. Integer varius ex maximus quam lobortis accumsan. Morbi mollis vulputate metus, aliquam feugiat arcu porta a. Quisque id justo ultricies, lacinia elit quis, pulvinar odio. Fusce feugiat at velit vitae lobortis. Nulla fringilla metus et sem mattis posuere. Nulla pellentesque quam sit amet est posuere, tincidunt auctor ligula bibendum. Donec dapibus lacinia nibh, convallis ultrices enim laoreet et.</description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;p&gt;I am a multifaceted cybersecurity professional with expertise in network engineering, penetration testing, and bug bounty hunting. My diverse skill set allows me to approach security from multiple angles, ensuring comprehensive protection and vulnerability assessment.&lt;/p&gt;&#xA;&lt;h2 id=&#34;education-and-certifications&#34;&gt;Education and Certifications&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Degree in Network Management from the University of Sherbrooke, Canada&lt;/li&gt;&#xA;&lt;li&gt;Cisco Certified Network Associate (CCNA)&lt;/li&gt;&#xA;&lt;li&gt;Hack The Box Certified Penetration Testing Specialist (CPTS)&lt;/li&gt;&#xA;&lt;li&gt;Hack The Box Certified Bug Bounty Hunter (CBBH)&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;areas-of-expertise&#34;&gt;Areas of Expertise&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Network Engineering&lt;/li&gt;&#xA;&lt;li&gt;Network Penetration Testing&lt;/li&gt;&#xA;&lt;li&gt;Bug Bounty Hunting&lt;/li&gt;&#xA;&lt;li&gt;Cybersecurity&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;h2 id=&#34;current-focus&#34;&gt;Current Focus&lt;/h2&gt;&#xA;&lt;p&gt;I am currently expanding my skill set by pursuing a Red Team certification, further enhancing my ability to simulate real-world attacks and strengthen organizational security postures.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

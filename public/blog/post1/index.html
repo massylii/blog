@@ -1,0 +1,711 @@
+<!doctype html><html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="generator" content="Qubt theme for Hugo" />
+
+
+
+<title>MASSYLII</title>
+<meta name="title" content="MASSYLII" />
+
+
+
+  <meta name="author" content="MASSYLII" />
+
+
+
+
+  <meta name="description" content="Demo site build with Qubt &amp; Hugo" />
+
+
+
+
+
+
+
+
+
+<link type="text/css" rel="stylesheet" href="/css/main.bundle.min.a22730fdd3cc07d9c93ca48acba7923b2b14510e1c925c0caccb3049713e7098d3aa77911bfa9524926f8d7242e7097ee57f8048260d44f2938f4ec5f82a2373.css" integrity="sha512-oicw/dPMB9nJPKSKy6eSOysUUQ4cklwMrMswSXE&#43;cJjTqneRG/qVJJJvjXJC5wl&#43;5X&#43;ASCYNRPKTj07F&#43;Cojcw==" />
+
+
+
+
+
+
+
+
+
+<script defer src="/js/main.bundle.min.4657c962c90bb42241e3db9c00332ac44a2ff6a901654b8248b4e2f4b586571fd2aa672dcadf728d6f2135b0ea6088f21d1cf5302b4cae8557e0593f70081d72.js" integrity="sha512-RlfJYskLtCJB49ucADMqxEov9qkBZUuCSLTi9LWGVx/Sqmctyt9yjW8hNbDqYIjyHRz1MCtMroVX4Fk/cAgdcg=="></script>
+
+
+
+
+  
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/icon_hu4914785028757163862.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icon_hu526332659513709191.png" />
+
+
+
+<meta property="og:url" content="http://localhost:1313/blog/post1/">
+  <meta property="og:site_name" content="MASSYLII">
+  <meta property="og:title" content="Pentesting SMB Protocol">
+  <meta property="og:description" content="SMB is a networking protocol used to share files between different servers">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="blog">
+    <meta property="article:published_time" content="2023-11-24T00:00:00+00:00">
+    <meta property="article:modified_time" content="2023-11-24T00:00:00+00:00">
+    <meta property="og:image" content="http://localhost:1313/thumbnail.png">
+
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/thumbnail.png">
+  <meta name="twitter:title" content="Pentesting SMB Protocol">
+  <meta name="twitter:description" content="SMB is a networking protocol used to share files between different servers">
+
+
+<script>
+  
+  if (localStorage.getItem("color-theme") === "dark" || (!("color-theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+</script>
+
+  </head>
+  <body class="flex h-screen flex-col justify-between bg-neutral-100 dark:bg-neutral-800">
+    <div>
+      <header class="sticky top-0 z-10 bg-neutral-100 dark:bg-neutral-800">
+        
+
+
+
+<section class="mx-auto flex max-w-screen-xl items-center justify-between p-4">
+  <a href="http://localhost:1313/" class="flex items-center space-x-3">
+    
+      
+      <img src="/logo_hu10675493527724622973.webp" class="h-8 w-8" alt="Logo" />
+    
+    <span class="self-center whitespace-nowrap text-2xl font-semibold text-slate-700 dark:text-slate-400">
+      MASSYLII
+    </span>
+  </a>
+  <div class="flex flex-row space-x-8">
+    <nav class="hidden space-x-8 text-xl md:block" aria-label="main">
+      
+        <a href="/" class="px-3 py-2 text-slate-700 hover:text-indigo-500 md:p-0 dark:text-slate-400">
+          Home
+        </a>
+      
+        <a href="/blog/" class="px-3 py-2 text-slate-700 hover:text-indigo-500 md:p-0 dark:text-slate-400">
+          Blog
+        </a>
+      
+        <a href="/about/" class="px-3 py-2 text-slate-700 hover:text-indigo-500 md:p-0 dark:text-slate-400">
+          About
+        </a>
+      
+    </nav>
+    <button id="theme-toggle" type="button" class="rounded-lg text-sm text-slate-700 hover:text-indigo-500 dark:text-slate-400" aria-label="theme-switcher">
+      <svg id="theme-toggle-dark-icon" class="hidden h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+      </svg>
+      <svg id="theme-toggle-light-icon" class="hidden h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+          fill-rule="evenodd"
+          clip-rule="evenodd"></path>
+      </svg>
+    </button>
+    <button id="hamburger-button" class="relative h-8 w-8 cursor-pointer text-3xl md:hidden" aria-label="hamburger-button">
+      <div
+        class="absolute top-4 -mt-0.5 h-[3px] w-8 rounded bg-slate-700 transition-all duration-500 before:absolute before:h-[3px] before:w-8 before:-translate-x-4 before:-translate-y-2.5 before:rounded before:bg-slate-700 before:transition-all before:duration-500 before:content-[''] after:absolute after:h-[3px] after:w-8 after:-translate-x-4 after:translate-y-2.5 after:rounded after:bg-slate-700 after:transition-all after:duration-500 after:content-[''] dark:bg-slate-400 before:dark:bg-slate-400 after:dark:bg-slate-400"></div>
+    </button>
+  </div>
+</section>
+<section id="mobile-menu" class="absolute hidden w-full origin-top animate-open-menu flex-col justify-center bg-neutral-100 text-4xl dark:bg-neutral-800">
+  <nav class="flex min-h-screen flex-col items-center py-8" aria-label="mobile">
+    
+      <a href="/" class="px-3 py-2 text-center text-slate-700 hover:text-indigo-500 md:p-0 dark:text-slate-400">
+        Home
+      </a>
+    
+      <a href="/blog/" class="px-3 py-2 text-center text-slate-700 hover:text-indigo-500 md:p-0 dark:text-slate-400">
+        Blog
+      </a>
+    
+      <a href="/about/" class="px-3 py-2 text-center text-slate-700 hover:text-indigo-500 md:p-0 dark:text-slate-400">
+        About
+      </a>
+    
+  </nav>
+</section>
+
+      </header>
+      <main>
+        
+  
+  
+  
+  
+
+
+  <div class="justify-left mx-auto mt-8 flex max-w-screen-md px-4">
+    <article>
+      <h1 class="text-4xl font-extrabold text-slate-700 dark:text-slate-200">
+        Pentesting SMB Protocol
+      </h1>
+      <h2 class="mt-4 text-2xl text-slate-500 dark:text-slate-400">
+        Blog post subtitle ⚡
+      </h2>
+      <div class="mb-4 mt-2 text-sm text-slate-500 dark:text-slate-400">
+        Nov 24, 2023 - 9 minute read
+      </div>
+
+      
+        
+        <div class="flex flex-col">
+          <img class="mt-4 h-full w-full object-cover" src="/blog1/smb_hu88349826220354879.webp" alt="feature image" height="554" width="736" />
+          
+            <span class="mb-4 mt-1 text-center text-sm text-slate-700 dark:text-slate-200">
+              Image caption
+            </span>
+          
+        </div>
+      
+
+
+      <span class="prose prose-slate break-words text-lg text-slate-700 dark:prose-invert prose-pre:max-w-[90vw] md:prose-pre:max-w-screen-md dark:text-slate-200">
+        <p>can be vulnerable to remote code execution
+RCE such as EternalBlue</p>
+<p>enumerate</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nmap --script smb-os-discovery.nse -p445 10.10.10.40
+</span></span></code></pre></div><p>see if the windows version is vulnerable to EternalBlue</p>
+<p>get the version of samba</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nmap -A -p445 10.129.42.253
+</span></span></code></pre></div><h4 id="shares">Shares</h4>
+<p>A tool that can enumerate and interact with SMB shares is [smbclient]
+The <code>-L</code> flag specifies that we want to retrieve a list of available shares on the remote host, while <code>-N</code> suppresses the password prompt.</p>
+<p><code>null session</code> (<code>-N</code>), which is <code>anonymous</code> access without the input of existing users or valid passwords.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smbclient -N -L <span style="color:#ae81ff">\\\\</span>10.129.42.253
+</span></span></code></pre></div><h4 id="smbclient---connecting-to-the-share">SMBclient - Connecting to the Share</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> smbclient -N -L //10.129.14.128
+</span></span></code></pre></div><p>the non-default share <code>users</code>.
+connect to users</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smbclient <span style="color:#ae81ff">\\\\</span>10.129.42.253<span style="color:#ae81ff">\\</span>users
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smbclient //10.129.14.128/notes
+</span></span></code></pre></div><p>connecting with a user BOB and a password</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smbclient -U bob <span style="color:#ae81ff">\\\\</span>10.129.42.253<span style="color:#ae81ff">\\</span>users
+</span></span></code></pre></div><p>all the possible commands we can execute.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> help
+</span></span></code></pre></div><h4 id="download-files-from-smb">Download Files from SMB</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> get prep-prod.txt 
+</span></span></code></pre></div><p>execute local system commands (<code>!&lt;cmd&gt;</code>)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> !ls
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smb: <span style="color:#ae81ff">\&gt;</span> !cat prep-prod.txt
+</span></span></code></pre></div><h4 id="samba-status">Samba Status</h4>
+<p>can give u from which host, and which share the client is connected.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> smbstatus
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Samba version 4.11.6-Ubuntu
+</span></span><span style="display:flex;"><span>PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              
+</span></span><span style="display:flex;"><span>----------------------------------------------------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">75691</span>   sambauser    samba        10.10.14.4 <span style="color:#f92672">(</span>ipv4:10.10.14.4:45564<span style="color:#f92672">)</span>      SMB3_11           -                    -                    
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Service      pid     Machine       Connected at                     Encryption   Signing     
+</span></span><span style="display:flex;"><span>---------------------------------------------------------------------------------------------
+</span></span><span style="display:flex;"><span>notes        <span style="color:#ae81ff">75691</span>   10.10.14.4   Do Sep <span style="color:#ae81ff">23</span> 00:12:06 <span style="color:#ae81ff">2021</span> CEST     -            -           
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>No locked files
+</span></span></code></pre></div><h2 id="footprinting-the-service">Footprinting the Service</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo nmap 10.129.14.128 -sV -sC -p139,445
+</span></span></code></pre></div><h4 id="rpcclient">RPCclient</h4>
+<p>interact manually with the SMB and send specific requests for the information</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> rpcclient -U <span style="color:#e6db74">&#34;&#34;</span> 10.129.14.128
+</span></span></code></pre></div><table>
+  <thead>
+      <tr>
+          <th style="text-align: left"><strong>Query</strong></th>
+          <th style="text-align: left"><strong>Description</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><code>srvinfo</code></td>
+          <td style="text-align: left">Server information.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>enumdomains</code></td>
+          <td style="text-align: left">Enumerate all domains that are deployed in the network.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>querydominfo</code></td>
+          <td style="text-align: left">Provides domain, server, and user information of deployed domains.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>netshareenumall</code></td>
+          <td style="text-align: left">Enumerates all available shares.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>netsharegetinfo &lt;share&gt;</code></td>
+          <td style="text-align: left">Provides information about a specific share.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>enumdomusers</code></td>
+          <td style="text-align: left">Enumerates all domain users.</td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><code>queryuser &lt;RID&gt;</code></td>
+          <td style="text-align: left">Provides information about a specific user.</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="rpcclient---enumeration">RPCclient - Enumeration</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpcclient $&gt; srvinfo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        DEVSMB         Wk Sv PrQ Unx NT SNT DEVSM
+</span></span><span style="display:flex;"><span>        platform_id     :       <span style="color:#ae81ff">500</span>
+</span></span><span style="display:flex;"><span>        os version      :       6.1
+</span></span><span style="display:flex;"><span>        server type     :       0x809a03
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>rpcclient $&gt; enumdomains
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>name:<span style="color:#f92672">[</span>DEVSMB<span style="color:#f92672">]</span> idx:<span style="color:#f92672">[</span>0x0<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>name:<span style="color:#f92672">[</span>Builtin<span style="color:#f92672">]</span> idx:<span style="color:#f92672">[</span>0x1<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rpcclient $&gt; querydominfo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Domain:         DEVOPS
+</span></span><span style="display:flex;"><span>Server:         DEVSMB
+</span></span><span style="display:flex;"><span>Comment:        DEVSM
+</span></span><span style="display:flex;"><span>Total Users:    <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>Total Groups:   <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>Total Aliases:  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>Sequence No:    <span style="color:#ae81ff">1632361158</span>
+</span></span><span style="display:flex;"><span>Force Logoff:   -1
+</span></span><span style="display:flex;"><span>Domain Server State:    0x1
+</span></span><span style="display:flex;"><span>Server Role:    ROLE_DOMAIN_PDC
+</span></span><span style="display:flex;"><span>Unknown 3:      0x1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rpcclient $&gt; netshareenumall
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>netname: print$
+</span></span><span style="display:flex;"><span>        remark: Printer Drivers
+</span></span><span style="display:flex;"><span>        path:   C:<span style="color:#ae81ff">\v</span>ar<span style="color:#ae81ff">\l</span>ib<span style="color:#ae81ff">\s</span>amba<span style="color:#ae81ff">\p</span>rinters
+</span></span><span style="display:flex;"><span>        password:
+</span></span><span style="display:flex;"><span>netname: home
+</span></span><span style="display:flex;"><span>        remark: INFREIGHT Samba
+</span></span><span style="display:flex;"><span>        path:   C:<span style="color:#ae81ff">\h</span>ome<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        password:
+</span></span><span style="display:flex;"><span>netname: dev
+</span></span><span style="display:flex;"><span>        remark: DEVenv
+</span></span><span style="display:flex;"><span>        path:   C:<span style="color:#ae81ff">\h</span>ome<span style="color:#ae81ff">\s</span>ambauser<span style="color:#ae81ff">\d</span>ev<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        password:
+</span></span><span style="display:flex;"><span>netname: notes
+</span></span><span style="display:flex;"><span>        remark: CheckIT
+</span></span><span style="display:flex;"><span>        path:   C:<span style="color:#ae81ff">\m</span>nt<span style="color:#ae81ff">\n</span>otes<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        password:
+</span></span><span style="display:flex;"><span>netname: IPC$
+</span></span><span style="display:flex;"><span>        remark: IPC Service <span style="color:#f92672">(</span>DEVSM<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>        path:   C:<span style="color:#ae81ff">\t</span>mp
+</span></span><span style="display:flex;"><span>        password:
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>rpcclient $&gt; netsharegetinfo notes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>netname: notes
+</span></span><span style="display:flex;"><span>        remark: CheckIT
+</span></span><span style="display:flex;"><span>        path:   C:<span style="color:#ae81ff">\m</span>nt<span style="color:#ae81ff">\n</span>otes<span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>        password:
+</span></span><span style="display:flex;"><span>        type:   0x0
+</span></span><span style="display:flex;"><span>        perms:  <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>        max_uses:       -1
+</span></span><span style="display:flex;"><span>        num_uses:       <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>revision: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>type: 0x8004: SEC_DESC_DACL_PRESENT SEC_DESC_SELF_RELATIVE 
+</span></span><span style="display:flex;"><span>DACL
+</span></span><span style="display:flex;"><span>        ACL     Num ACEs:       <span style="color:#ae81ff">1</span>       revision:       <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>        ---
+</span></span><span style="display:flex;"><span>        ACE
+</span></span><span style="display:flex;"><span>                type: ACCESS ALLOWED <span style="color:#f92672">(</span>0<span style="color:#f92672">)</span> flags: 0x00 
+</span></span><span style="display:flex;"><span>                Specific bits: 0x1ff
+</span></span><span style="display:flex;"><span>                Permissions: 0x101f01ff: Generic all access SYNCHRONIZE_ACCESS WRITE_OWNER_ACCESS WRITE_DAC_ACCESS READ_CONTROL_ACCESS DELETE_ACCESS 
+</span></span><span style="display:flex;"><span>                SID: S-1-1-0
+</span></span></code></pre></div><h4 id="rpcclient---user-enumeration">Rpcclient - User Enumeration</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> enumdomusers
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpcclient $&gt; enumdomusers
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>mrb3n<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x3e8<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>user:<span style="color:#f92672">[</span>cry0l1t3<span style="color:#f92672">]</span> rid:<span style="color:#f92672">[</span>0x3e9<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rpcclient $&gt; queryuser 0x3e9
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        User Name   :   cry0l1t3
+</span></span><span style="display:flex;"><span>        Full Name   :   cry0l1t3
+</span></span><span style="display:flex;"><span>        Home Drive  :   <span style="color:#ae81ff">\\</span>devsmb<span style="color:#ae81ff">\c</span>ry0l1t3
+</span></span><span style="display:flex;"><span>        Dir Drive   :
+</span></span><span style="display:flex;"><span>        Profile Path:   <span style="color:#ae81ff">\\</span>devsmb<span style="color:#ae81ff">\c</span>ry0l1t3<span style="color:#ae81ff">\p</span>rofile
+</span></span><span style="display:flex;"><span>        Logon Script:
+</span></span><span style="display:flex;"><span>        Description :
+</span></span><span style="display:flex;"><span>        Workstations:
+</span></span><span style="display:flex;"><span>        Comment     :
+</span></span><span style="display:flex;"><span>        Remote Dial :
+</span></span><span style="display:flex;"><span>        Logon Time               :      Do, <span style="color:#ae81ff">01</span> Jan <span style="color:#ae81ff">1970</span> 01:00:00 CET
+</span></span><span style="display:flex;"><span>        Logoff Time              :      Mi, <span style="color:#ae81ff">06</span> Feb <span style="color:#ae81ff">2036</span> 16:06:39 CET
+</span></span><span style="display:flex;"><span>        Kickoff Time             :      Mi, <span style="color:#ae81ff">06</span> Feb <span style="color:#ae81ff">2036</span> 16:06:39 CET
+</span></span><span style="display:flex;"><span>        Password last set Time   :      Mi, <span style="color:#ae81ff">22</span> Sep <span style="color:#ae81ff">2021</span> 17:50:56 CEST
+</span></span><span style="display:flex;"><span>        Password can change Time :      Mi, <span style="color:#ae81ff">22</span> Sep <span style="color:#ae81ff">2021</span> 17:50:56 CEST
+</span></span><span style="display:flex;"><span>        Password must change Time:      Do, <span style="color:#ae81ff">14</span> Sep <span style="color:#ae81ff">30828</span> 04:48:05 CEST
+</span></span><span style="display:flex;"><span>        unknown_2<span style="color:#f92672">[</span>0..31<span style="color:#f92672">]</span>...
+</span></span><span style="display:flex;"><span>        user_rid :      0x3e9
+</span></span><span style="display:flex;"><span>        group_rid:      0x201
+</span></span><span style="display:flex;"><span>        acb_info :      0x00000014
+</span></span><span style="display:flex;"><span>        fields_present: 0x00ffffff
+</span></span><span style="display:flex;"><span>        logon_divs:     <span style="color:#ae81ff">168</span>
+</span></span><span style="display:flex;"><span>        bad_password_count:     0x00000000
+</span></span><span style="display:flex;"><span>        logon_count:    0x00000000
+</span></span><span style="display:flex;"><span>        padding1<span style="color:#f92672">[</span>0..7<span style="color:#f92672">]</span>...
+</span></span><span style="display:flex;"><span>        logon_hrs<span style="color:#f92672">[</span>0..21<span style="color:#f92672">]</span>...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>rpcclient $&gt; queryuser 0x3e8
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        User Name   :   mrb3n
+</span></span><span style="display:flex;"><span>        Full Name   :
+</span></span><span style="display:flex;"><span>        Home Drive  :   <span style="color:#ae81ff">\\</span>devsmb<span style="color:#ae81ff">\m</span>rb3n
+</span></span><span style="display:flex;"><span>        Dir Drive   :
+</span></span><span style="display:flex;"><span>        Profile Path:   <span style="color:#ae81ff">\\</span>devsmb<span style="color:#ae81ff">\m</span>rb3n<span style="color:#ae81ff">\p</span>rofile
+</span></span><span style="display:flex;"><span>        Logon Script:
+</span></span><span style="display:flex;"><span>        Description :
+</span></span><span style="display:flex;"><span>        Workstations:
+</span></span><span style="display:flex;"><span>        Comment     :
+</span></span><span style="display:flex;"><span>        Remote Dial :
+</span></span><span style="display:flex;"><span>        Logon Time               :      Do, <span style="color:#ae81ff">01</span> Jan <span style="color:#ae81ff">1970</span> 01:00:00 CET
+</span></span><span style="display:flex;"><span>        Logoff Time              :      Mi, <span style="color:#ae81ff">06</span> Feb <span style="color:#ae81ff">2036</span> 16:06:39 CET
+</span></span><span style="display:flex;"><span>        Kickoff Time             :      Mi, <span style="color:#ae81ff">06</span> Feb <span style="color:#ae81ff">2036</span> 16:06:39 CET
+</span></span><span style="display:flex;"><span>        Password last set Time   :      Mi, <span style="color:#ae81ff">22</span> Sep <span style="color:#ae81ff">2021</span> 17:47:59 CEST
+</span></span><span style="display:flex;"><span>        Password can change Time :      Mi, <span style="color:#ae81ff">22</span> Sep <span style="color:#ae81ff">2021</span> 17:47:59 CEST
+</span></span><span style="display:flex;"><span>        Password must change Time:      Do, <span style="color:#ae81ff">14</span> Sep <span style="color:#ae81ff">30828</span> 04:48:05 CEST
+</span></span><span style="display:flex;"><span>        unknown_2<span style="color:#f92672">[</span>0..31<span style="color:#f92672">]</span>...
+</span></span><span style="display:flex;"><span>        user_rid :      0x3e8
+</span></span><span style="display:flex;"><span>        group_rid:      0x201
+</span></span><span style="display:flex;"><span>        acb_info :      0x00000010
+</span></span><span style="display:flex;"><span>        fields_present: 0x00ffffff
+</span></span><span style="display:flex;"><span>        logon_divs:     <span style="color:#ae81ff">168</span>
+</span></span><span style="display:flex;"><span>        bad_password_count:     0x00000000
+</span></span><span style="display:flex;"><span>        logon_count:    0x00000000
+</span></span><span style="display:flex;"><span>        padding1<span style="color:#f92672">[</span>0..7<span style="color:#f92672">]</span>...
+</span></span><span style="display:flex;"><span>        logon_hrs<span style="color:#f92672">[</span>0..21<span style="color:#f92672">]</span>...
+</span></span></code></pre></div><p>use the results to identify the group&rsquo;s RID,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span> group_rid:      0x201
+</span></span></code></pre></div><p>which we can then use to retrieve information from the entire group.</p>
+<h4 id="rpcclient---group-information">Rpcclient - Group Information</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>querygroup 0x201
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        Group Name:     None
+</span></span><span style="display:flex;"><span>        Description:    Ordinary Users
+</span></span><span style="display:flex;"><span>        Group Attribute:7
+</span></span><span style="display:flex;"><span>        Num Members:2
+</span></span></code></pre></div><h4 id="brute-forcing-user-rids">Brute Forcing User RIDs</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> i in <span style="color:#66d9ef">$(</span>seq <span style="color:#ae81ff">500</span> 1100<span style="color:#66d9ef">)</span>;<span style="color:#66d9ef">do</span> rpcclient -N -U <span style="color:#e6db74">&#34;&#34;</span> 10.129.14.128 -c <span style="color:#e6db74">&#34;queryuser 0x</span><span style="color:#66d9ef">$(</span>printf <span style="color:#e6db74">&#39;%x\n&#39;</span> $i<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> | grep <span style="color:#e6db74">&#34;User Name\|user_rid\|group_rid&#34;</span> <span style="color:#f92672">&amp;&amp;</span> echo <span style="color:#e6db74">&#34;&#34;</span>;<span style="color:#66d9ef">done</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        User Name   :   sambauser
+</span></span><span style="display:flex;"><span>        user_rid :      0x1f5
+</span></span><span style="display:flex;"><span>        group_rid:      0x201
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>        User Name   :   mrb3n
+</span></span><span style="display:flex;"><span>        user_rid :      0x3e8
+</span></span><span style="display:flex;"><span>        group_rid:      0x201
+</span></span><span style="display:flex;"><span>		
+</span></span><span style="display:flex;"><span>        User Name   :   cry0l1t3
+</span></span><span style="display:flex;"><span>        user_rid :      0x3e9
+</span></span><span style="display:flex;"><span>        group_rid:      0x201
+</span></span></code></pre></div><p>An alternative to this would be a Python script from <a href="https://github.com/SecureAuthCorp/impacket">Impacket</a> called <a href="https://github.com/SecureAuthCorp/impacket/blob/master/examples/samrdump.py">samrdump.py</a>.</p>
+<h4 id="impacket---samrdumppy">Impacket - Samrdump.py</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>samrdump.py 10.129.14.128
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Impacket v0.9.22 - Copyright <span style="color:#ae81ff">2020</span> SecureAuth Corporation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Retrieving endpoint list from 10.129.14.128
+</span></span><span style="display:flex;"><span>Found domain<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span> . DEVSMB
+</span></span><span style="display:flex;"><span> . Builtin
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Looking up users in domain DEVSMB
+</span></span><span style="display:flex;"><span>Found user: mrb3n, uid <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
+</span></span><span style="display:flex;"><span>Found user: cry0l1t3, uid <span style="color:#f92672">=</span> <span style="color:#ae81ff">1001</span>
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/FullName: 
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/UserComment: 
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/PrimaryGroupId: <span style="color:#ae81ff">513</span>
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/BadPasswordCount: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/LogonCount: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/PasswordLastSet: 2021-09-22 17:47:59
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/PasswordDoesNotExpire: False
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/AccountIsDisabled: False
+</span></span><span style="display:flex;"><span>mrb3n <span style="color:#f92672">(</span>1000<span style="color:#f92672">)</span>/ScriptPath: 
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/FullName: cry0l1t3
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/UserComment: 
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/PrimaryGroupId: <span style="color:#ae81ff">513</span>
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/BadPasswordCount: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/LogonCount: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/PasswordLastSet: 2021-09-22 17:50:56
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/PasswordDoesNotExpire: False
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/AccountIsDisabled: False
+</span></span><span style="display:flex;"><span>cry0l1t3 <span style="color:#f92672">(</span>1001<span style="color:#f92672">)</span>/ScriptPath: 
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Received <span style="color:#ae81ff">2</span> entries.
+</span></span></code></pre></div><p><code>rpcclient</code>alternatives <a href="https://github.com/ShawnDEvans/smbmap">SMBMap</a> and <a href="https://github.com/byt3bl33d3r/CrackMapExec">CrackMapExec</a></p>
+<h4 id="smbmap">SMBmap</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>smbmap -H 10.129.14.128
+</span></span></code></pre></div><pre tabindex="0"><code>
+[+] Finding open SMB ports....
+[+] User SMB session established on 10.129.14.128...
+[+] IP: 10.129.14.128:445       Name: 10.129.14.128                                     
+        Disk                                                    Permissions     Comment
+        ----                                                    -----------     -------
+        print$                                                  NO ACCESS       Printer Drivers
+        home                                                    NO ACCESS       INFREIGHT Samba
+        dev                                                     NO ACCESS       DEVenv
+        notes                                                   NO ACCESS       CheckIT
+        IPC$                                                    NO ACCESS       IPC Service (DEVSM)
+</code></pre><h4 id="crackmapexec">CrackMapExec</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>crackmapexec smb 10.129.14.128 --shares -u <span style="color:#e6db74">&#39;&#39;</span> -p <span style="color:#e6db74">&#39;&#39;</span>
+</span></span></code></pre></div><pre tabindex="0"><code>
+SMB         10.129.14.128   445    DEVSMB           [*] Windows 6.1 Build 0 (name:DEVSMB) (domain:) (signing:False) (SMBv1:False)
+SMB         10.129.14.128   445    DEVSMB           [+] \: 
+SMB         10.129.14.128   445    DEVSMB           [+] Enumerated shares
+SMB         10.129.14.128   445    DEVSMB           Share           Permissions     Remark
+SMB         10.129.14.128   445    DEVSMB           -----           -----------     ------
+SMB         10.129.14.128   445    DEVSMB           print$                          Printer Drivers
+SMB         10.129.14.128   445    DEVSMB           home                            INFREIGHT Samba
+SMB         10.129.14.128   445    DEVSMB           dev                             DEVenv
+SMB         10.129.14.128   445    DEVSMB           notes           READ,WRITE      CheckIT
+SMB         10.129.14.128   445    DEVSMB           IPC$          
+</code></pre><p>Another tool worth mentioning</p>
+<p><a href="https://github.com/cddmp/enum4linux-ng">enum4linux-ng</a></p>
+<h4 id="enum4linux-ng---installation">Enum4Linux-ng - Installation</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>git clone https://github.com/cddmp/enum4linux-ng.git
+</span></span><span style="display:flex;"><span>cd enum4linux-ng
+</span></span><span style="display:flex;"><span>pip3 install -r requirements.txt
+</span></span></code></pre></div><h4 id="enum4linux-ng---enumeration">Enum4Linux-ng - Enumeration</h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./enum4linux-ng.py 10.129.14.128 -A
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ENUM4LINUX - next generation
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================</span>
+</span></span><span style="display:flex;"><span>|    Target Information    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Target ........... 10.129.14.128
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Username ......... <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Random Username .. <span style="color:#e6db74">&#39;juzgtcsu&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Password ......... <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Timeout .......... <span style="color:#ae81ff">5</span> second<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=====================================</span>
+</span></span><span style="display:flex;"><span>|    Service Scan on 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=====================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Checking LDAP
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> Could not connect to LDAP on 389/tcp: connection refused
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Checking LDAPS
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> Could not connect to LDAPS on 636/tcp: connection refused
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Checking SMB
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> SMB is accessible on 445/tcp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Checking SMB over NetBIOS
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> SMB over NetBIOS is accessible on 139/tcp
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=====================================================</span>
+</span></span><span style="display:flex;"><span>|    NetBIOS Names and Workgroup <span style="color:#66d9ef">for</span> 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=====================================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Got domain/workgroup name: DEVOPS
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Full NetBIOS names information:
+</span></span><span style="display:flex;"><span>- DEVSMB          &lt;00&gt; -         H &lt;ACTIVE&gt;  Workstation Service
+</span></span><span style="display:flex;"><span>- DEVSMB          &lt;03&gt; -         H &lt;ACTIVE&gt;  Messenger Service
+</span></span><span style="display:flex;"><span>- DEVSMB          &lt;20&gt; -         H &lt;ACTIVE&gt;  File Server Service
+</span></span><span style="display:flex;"><span>- ..__MSBROWSE__. &lt;01&gt; - &lt;GROUP&gt; H &lt;ACTIVE&gt;  Master Browser
+</span></span><span style="display:flex;"><span>- DEVOPS          &lt;00&gt; - &lt;GROUP&gt; H &lt;ACTIVE&gt;  Domain/Workgroup Name
+</span></span><span style="display:flex;"><span>- DEVOPS          &lt;1d&gt; -         H &lt;ACTIVE&gt;  Master Browser
+</span></span><span style="display:flex;"><span>- DEVOPS          &lt;1e&gt; - &lt;GROUP&gt; H &lt;ACTIVE&gt;  Browser Service Elections
+</span></span><span style="display:flex;"><span>- MAC Address <span style="color:#f92672">=</span> 00-00-00-00-00-00
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span>|    SMB Dialect Check on 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Trying on 445/tcp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Supported dialects and settings:
+</span></span><span style="display:flex;"><span>SMB 1.0: false
+</span></span><span style="display:flex;"><span>SMB 2.02: true
+</span></span><span style="display:flex;"><span>SMB 2.1: true
+</span></span><span style="display:flex;"><span>SMB 3.0: true
+</span></span><span style="display:flex;"><span>SMB1 only: false
+</span></span><span style="display:flex;"><span>Preferred dialect: SMB 3.0
+</span></span><span style="display:flex;"><span>SMB signing required: false
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span>|    RPC Session Check on 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Check <span style="color:#66d9ef">for</span> null session
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Server allows session using username <span style="color:#e6db74">&#39;&#39;</span>, password <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Check <span style="color:#66d9ef">for</span> random user session
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Server allows session using username <span style="color:#e6db74">&#39;juzgtcsu&#39;</span>, password <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>H<span style="color:#f92672">]</span> Rerunning enumeration with user <span style="color:#e6db74">&#39;juzgtcsu&#39;</span> might give more results
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">====================================================</span>
+</span></span><span style="display:flex;"><span>|    Domain Information via RPC <span style="color:#66d9ef">for</span> 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">====================================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Domain: DEVOPS
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> SID: NULL SID
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Host is part of a workgroup <span style="color:#f92672">(</span>not a domain<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">============================================================</span>
+</span></span><span style="display:flex;"><span>|    Domain Information via SMB session <span style="color:#66d9ef">for</span> 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">============================================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating via unauthenticated SMB session on 445/tcp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found domain information via SMB
+</span></span><span style="display:flex;"><span>NetBIOS computer name: DEVSMB
+</span></span><span style="display:flex;"><span>NetBIOS domain name: <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>DNS domain: <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>FQDN: htb
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">================================================</span>
+</span></span><span style="display:flex;"><span>|    OS Information via RPC <span style="color:#66d9ef">for</span> 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">================================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating via unauthenticated SMB session on 445/tcp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found OS information via SMB
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating via <span style="color:#e6db74">&#39;srvinfo&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found OS information via <span style="color:#e6db74">&#39;srvinfo&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> After merging OS information we have the following result:
+</span></span><span style="display:flex;"><span>OS: Windows 7, Windows Server <span style="color:#ae81ff">2008</span> R2
+</span></span><span style="display:flex;"><span>OS version: <span style="color:#e6db74">&#39;6.1&#39;</span>
+</span></span><span style="display:flex;"><span>OS release: <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>OS build: <span style="color:#e6db74">&#39;0&#39;</span>
+</span></span><span style="display:flex;"><span>Native OS: not supported
+</span></span><span style="display:flex;"><span>Native LAN manager: not supported
+</span></span><span style="display:flex;"><span>Platform id: <span style="color:#e6db74">&#39;500&#39;</span>
+</span></span><span style="display:flex;"><span>Server type: <span style="color:#e6db74">&#39;0x809a03&#39;</span>
+</span></span><span style="display:flex;"><span>Server type string: Wk Sv PrQ Unx NT SNT DEVSM
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">======================================</span>
+</span></span><span style="display:flex;"><span>|    Users via RPC on 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">======================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating users via <span style="color:#e6db74">&#39;querydispinfo&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">2</span> users via <span style="color:#e6db74">&#39;querydispinfo&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating users via <span style="color:#e6db74">&#39;enumdomusers&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">2</span> users via <span style="color:#e6db74">&#39;enumdomusers&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> After merging user results we have <span style="color:#ae81ff">2</span> users total:
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;1000&#39;</span>:
+</span></span><span style="display:flex;"><span>  username: mrb3n
+</span></span><span style="display:flex;"><span>  name: <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>  acb: <span style="color:#e6db74">&#39;0x00000010&#39;</span>
+</span></span><span style="display:flex;"><span>  description: <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;1001&#39;</span>:
+</span></span><span style="display:flex;"><span>  username: cry0l1t3
+</span></span><span style="display:flex;"><span>  name: cry0l1t3
+</span></span><span style="display:flex;"><span>  acb: <span style="color:#e6db74">&#39;0x00000014&#39;</span>
+</span></span><span style="display:flex;"><span>  description: <span style="color:#e6db74">&#39;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=======================================</span>
+</span></span><span style="display:flex;"><span>|    Groups via RPC on 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=======================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating local groups
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">0</span> group<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> via <span style="color:#e6db74">&#39;enumalsgroups domain&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating builtin groups
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">0</span> group<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> via <span style="color:#e6db74">&#39;enumalsgroups builtin&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating domain groups
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">0</span> group<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span> via <span style="color:#e6db74">&#39;enumdomgroups&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=======================================</span>
+</span></span><span style="display:flex;"><span>|    Shares via RPC on 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">=======================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Enumerating shares
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found <span style="color:#ae81ff">5</span> share<span style="color:#f92672">(</span>s<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>IPC$:
+</span></span><span style="display:flex;"><span>  comment: IPC Service <span style="color:#f92672">(</span>DEVSM<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>  type: IPC
+</span></span><span style="display:flex;"><span>dev:
+</span></span><span style="display:flex;"><span>  comment: DEVenv
+</span></span><span style="display:flex;"><span>  type: Disk
+</span></span><span style="display:flex;"><span>home:
+</span></span><span style="display:flex;"><span>  comment: INFREIGHT Samba
+</span></span><span style="display:flex;"><span>  type: Disk
+</span></span><span style="display:flex;"><span>notes:
+</span></span><span style="display:flex;"><span>  comment: CheckIT
+</span></span><span style="display:flex;"><span>  type: Disk
+</span></span><span style="display:flex;"><span>print$:
+</span></span><span style="display:flex;"><span>  comment: Printer Drivers
+</span></span><span style="display:flex;"><span>  type: Disk
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Testing share IPC$
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> Could not check share: STATUS_OBJECT_NAME_NOT_FOUND
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Testing share dev
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>-<span style="color:#f92672">]</span> Share doesn<span style="color:#960050;background-color:#1e0010">&#39;</span>t exist
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Testing share home
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Mapping: OK, Listing: OK
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Testing share notes
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Mapping: OK, Listing: OK
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Testing share print$
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Mapping: DENIED, Listing: N/A
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span>|    Policies via RPC <span style="color:#66d9ef">for</span> 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>*<span style="color:#f92672">]</span> Trying port 445/tcp
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> Found policy:
+</span></span><span style="display:flex;"><span>domain_password_information:
+</span></span><span style="display:flex;"><span>  pw_history_length: None
+</span></span><span style="display:flex;"><span>  min_pw_length: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>  min_pw_age: none
+</span></span><span style="display:flex;"><span>  max_pw_age: <span style="color:#ae81ff">49710</span> days <span style="color:#ae81ff">6</span> hours <span style="color:#ae81ff">21</span> minutes
+</span></span><span style="display:flex;"><span>  pw_properties:
+</span></span><span style="display:flex;"><span>  - DOMAIN_PASSWORD_COMPLEX: false
+</span></span><span style="display:flex;"><span>  - DOMAIN_PASSWORD_NO_ANON_CHANGE: false
+</span></span><span style="display:flex;"><span>  - DOMAIN_PASSWORD_NO_CLEAR_CHANGE: false
+</span></span><span style="display:flex;"><span>  - DOMAIN_PASSWORD_LOCKOUT_ADMINS: false
+</span></span><span style="display:flex;"><span>  - DOMAIN_PASSWORD_PASSWORD_STORE_CLEARTEXT: false
+</span></span><span style="display:flex;"><span>  - DOMAIN_PASSWORD_REFUSE_PASSWORD_CHANGE: false
+</span></span><span style="display:flex;"><span>domain_lockout_information:
+</span></span><span style="display:flex;"><span>  lockout_observation_window: <span style="color:#ae81ff">30</span> minutes
+</span></span><span style="display:flex;"><span>  lockout_duration: <span style="color:#ae81ff">30</span> minutes
+</span></span><span style="display:flex;"><span>  lockout_threshold: None
+</span></span><span style="display:flex;"><span>domain_logoff_information:
+</span></span><span style="display:flex;"><span>  force_logoff_time: <span style="color:#ae81ff">49710</span> days <span style="color:#ae81ff">6</span> hours <span style="color:#ae81ff">21</span> minutes
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span>|    Printers via RPC <span style="color:#66d9ef">for</span> 10.129.14.128    |
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">==========================================</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>+<span style="color:#f92672">]</span> No printers returned <span style="color:#f92672">(</span>this is not an error<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Completed after 0.61 seconds
+</span></span></code></pre></div>
+      </span>
+    </article>
+  </div>
+
+      </main>
+    </div>
+    <footer>
+      <div class="flex flex-col justify-center p-10">
+  
+  <p class="text-center text-slate-700 dark:text-slate-400">
+    &copy;
+    2024
+    MASSYLII
+  </p>
+
+  
+  
+  
+  
+  <p class="text-center text-sm text-slate-700 dark:text-slate-400">
+    Published with <a class="hover:underline hover:decoration-indigo-500 hover:text-indigo-500" href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> & <a class="hover:underline hover:decoration-indigo-500 hover:text-indigo-500" href="https://github.com/chrede88/qubt" target="_blank" rel="noopener noreferrer">Qubt</a>
+  </p>
+</div>
+
+    </footer>
+  </body>
+</html>
